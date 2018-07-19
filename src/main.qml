@@ -71,45 +71,32 @@ ApplicationWindow
         cellHeight: 70
         delegate: Item {
             x: 5
-            height: 50
+            height: 80
             Column {
-                Rectangle {
-                    width: 40
-                    height: 40
-                    color: colorCode
+                Image {
+                    width: sourceSize.width
+                    source: "qrc:/images/FolderIcon.png"
                     anchors.horizontalCenter: parent.horizontalCenter
+                    Rectangle {
+                        width: 20
+                        height: 20
+                        radius: width*0.5
+                        color: statusColor
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                    }
                 }
-
                 Text {
                     x: 5
                     text: name
                     font.bold: true
+                    color: "#cccccc"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 spacing: 5
             }
         }
-        model: ListModel {
-            ListElement {
-                name: "Grey"
-                colorCode: "grey"
-            }
-
-            ListElement {
-                name: "Red"
-                colorCode: "red"
-            }
-
-            ListElement {
-                name: "Blue"
-                colorCode: "blue"
-            }
-
-            ListElement {
-                name: "Green"
-                colorCode: "green"
-            }
-        }
+        model: repoListModel
         cellWidth: 70
     }
 }
