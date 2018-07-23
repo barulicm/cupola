@@ -45,3 +45,9 @@ void RepositoryListModel::replace(int i, Repository repo) {
   m_repos[i] = repo;
   emit dataChanged(createIndex(i,0), createIndex(i,0));
 }
+
+void RepositoryListModel::createRepository(QString localPath) {
+  auto lastSlashIndex = localPath.lastIndexOf('/');
+  auto name = localPath.mid(lastSlashIndex);
+  addRepository(Repository(name,localPath));
+}

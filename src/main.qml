@@ -55,7 +55,7 @@ ApplicationWindow
         }
         onDropped: {
             if(drop.hasUrls) {
-                console.log(drop.urls)
+                repoListModel.createRepository(drop.urls)
             }
         }
     }

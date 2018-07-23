@@ -25,6 +25,8 @@ public:
 
     Q_INVOKABLE void replace(int i, Repository repo);
 
+    Q_INVOKABLE void createRepository(QString localPath);
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 
