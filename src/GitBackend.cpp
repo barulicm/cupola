@@ -1,4 +1,5 @@
 #include <iostream>
+#include <git2/remote.h>
 #include "GitBackend.h"
 
 GitBackend::GitBackend(QObject *parent)
@@ -8,11 +9,12 @@ GitBackend::GitBackend(QObject *parent)
 }
 
 Repository GitBackend::updateRepository(Repository repo) {
-  repo.setStatusColor(Qt::transparent);
-  auto repoPath = repo.localPath().toStdString().c_str();
-  if (git_repository_open_ext(nullptr, repoPath, GIT_REPOSITORY_OPEN_NO_SEARCH, nullptr) == 0) {
+  const auto repoPath = repo.localPath().toStdString();
+  if (git_repository_open_ext(nullptr, repoPath.c_str(), GIT_REPOSITORY_OPEN_NO_SEARCH, nullptr) == 0) {
     git_repository *repoHandle = nullptr;
-    checkError(git_repository_open(&repoHandle, repoPath));
+    checkError(git_repository_open(&repoHandle, repoPath.c_str()));
+
+    repo.setStatusColor(Qt::transparent);
 
     auto tagsBeforeFetch = getAllTags(repoHandle);
 
@@ -22,9 +24,13 @@ Repository GitBackend::updateRepository(Repository repo) {
 
     notifyIfNewTags(repo, tagsBeforeFetch, tagsAfterFetch);
 
+    notifyIfNewBranchCommits(repo, repoHandle);
+
     git_repository_free(repoHandle);
+    std::cout << repo.name().toStdString() << " updated.\n";
+  } else {
+    std::cerr << "Could not find git repository at " << repoPath << std::endl;
   }
-  std::cout << repo.name().toStdString() << " updated.\n";
   return repo;
 }
 
@@ -76,4 +82,18 @@ void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tags
     }
     repo.addNotification(notification);
   }
+}
+
+void GitBackend::notifyIfNewBranchCommits(Repository repo, git_repository *repoHandle) {
+  git_reference *headReference = nullptr;
+  git_repository_head(&headReference, repoHandle);
+  if(git_reference_type(headReference) == GIT_REF_SYMBOLIC) {
+    auto branchName = git_reference_symbolic_target(headReference);
+    std::cout << "Current branch: " << branchName << "\n";
+  } else {
+    auto oid = git_reference_target(headReference);
+    auto oid_str = git_oid_tostr_s(oid);
+    std::cout << "Current commit: " << oid_str << "\n";
+  }
+  git_reference_free(headReference);
 }

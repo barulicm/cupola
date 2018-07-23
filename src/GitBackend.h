@@ -12,6 +12,8 @@ public:
 
     Q_INVOKABLE Repository updateRepository(Repository repo);
 
+private:
+
     void checkError(int error);
 
     void fetchAllRemotes(git_repository *repository);
@@ -20,6 +22,8 @@ public:
 
     void notifyIfNewTags(Repository repo, std::vector<std::string> &tagsBeforeFetch,
                          std::vector<std::string> &tagsAfterFetch);
+
+    void notifyIfNewBranchCommits(Repository repo, git_repository *repoHandle);
 };
 
 #endif //CUPOLA_GITBACKEND_H
