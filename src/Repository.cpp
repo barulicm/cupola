@@ -49,3 +49,15 @@ void Repository::setStatusColor(QColor statusColor) {
 void Repository::setLocalPath(QString localPath) {
   m_localPath = localPath;
 }
+
+QStringList Repository::notifications() const {
+  return m_notifications;
+}
+
+void Repository::addNotification(QString notification) {
+  m_notifications.append(notification);
+}
+
+void Repository::clearNotification(int notificationIndex) {
+  m_notifications.removeAt(notificationIndex);
+}
