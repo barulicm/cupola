@@ -56,6 +56,7 @@ ApplicationWindow
         width: sourceSize.width
         anchors.horizontalCenter: dropArea.horizontalCenter
         anchors.verticalCenter: dropArea.verticalCenter
+        visible: repoListModel.rowCount() == 0
     }
 
     GridView {
