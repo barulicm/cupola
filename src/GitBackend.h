@@ -4,15 +4,20 @@
 #include <QtCore/QObject>
 #include <git2.h>
 #include "Repository.h"
+#include "GitCredentialsManager.h"
 
 class GitBackend : public QObject {
 Q_OBJECT
 public:
     explicit GitBackend(QObject *parent = nullptr);
 
+    explicit GitBackend(GitCredentialsManager *credentialsManager, QObject *parent = nullptr);
+
     Q_INVOKABLE Repository updateRepository(Repository repo);
 
 private:
+
+    GitCredentialsManager *credentialsManager;
 
     void checkError(int error);
 

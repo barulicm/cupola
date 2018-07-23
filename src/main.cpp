@@ -14,7 +14,9 @@ int main(int argc, char** argv)
   RepositoryListModel repositoryListModel;
   repositoryListModel.addRepository(Repository("wheego_selfdrive", "/home/matt/wheego_selfdrive"));
 
-  GitBackend gitBackend;
+  GitCredentialsManager gitCredentialsManager;
+
+  GitBackend gitBackend(&gitCredentialsManager);
 
   QQmlApplicationEngine engine;
 

@@ -3,9 +3,16 @@
 #include "GitBackend.h"
 
 GitBackend::GitBackend(QObject *parent)
-  : QObject(parent)
+  : QObject(parent),
+    credentialsManager(nullptr)
 {
   git_libgit2_init();
+}
+
+GitBackend::GitBackend(GitCredentialsManager *credentialsManager, QObject *parent)
+  : QObject(parent),
+    credentialsManager(credentialsManager)
+{
 }
 
 Repository GitBackend::updateRepository(Repository repo) {
@@ -37,19 +44,25 @@ Repository GitBackend::updateRepository(Repository repo) {
 void GitBackend::checkError(int error) {
   if (error < 0) {
     const git_error *e = giterr_last();
-    printf("Error %d/%d: %s\n", error, e->klass, e->message);
+    if(e != nullptr) {
+      printf("Error %d/%d: %s\n", error, e->klass, e->message);
+    }
     exit(error);
   }
 }
 
 void GitBackend::fetchAllRemotes(git_repository *repository) {
+  git_fetch_options fetch_opts = GIT_FETCH_OPTIONS_INIT;
+  fetch_opts.callbacks.credentials = credential_manager_callback;
+  fetch_opts.callbacks.payload = credentialsManager;
+
   git_strarray remotes = {0};
   checkError(git_remote_list(&remotes, repository));
   for(auto i = 0; i < remotes.count; i++) {
     auto remoteName = remotes.strings[i];
     git_remote *remote = nullptr;
     checkError(git_remote_lookup(&remote, repository, remoteName));
-    checkError(git_remote_fetch(remote, nullptr, nullptr, nullptr));
+    checkError(git_remote_fetch(remote, nullptr, &fetch_opts, nullptr));
     git_remote_free(remote);
   }
 }
