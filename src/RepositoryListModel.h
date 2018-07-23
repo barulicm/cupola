@@ -21,6 +21,10 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    Q_INVOKABLE Repository get(int i);
+
+    Q_INVOKABLE void replace(int i, Repository repo);
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 

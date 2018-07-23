@@ -28,7 +28,13 @@ ApplicationWindow
             anchors.fill: parent
             Button {
                 id: button
-                text: qsTr("Refresh")
+                text: "Refresh"
+                onClicked: {
+                    for (var i=0; i < repoListModel.rowCount(); i++) {
+                        var newRepo = gitBackend.updateRepository(repoListModel.get(i))
+                        repoListModel.replace(i, newRepo)
+                    }
+                }
             }
         }
     }

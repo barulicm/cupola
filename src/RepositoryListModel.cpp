@@ -36,3 +36,12 @@ QVariant RepositoryListModel::data(const QModelIndex &index, int role) const {
 
   return QVariant();
 }
+
+Repository RepositoryListModel::get(int i) {
+  return m_repos[i];
+}
+
+void RepositoryListModel::replace(int i, Repository repo) {
+  m_repos[i] = repo;
+  emit dataChanged(createIndex(i,0), createIndex(i,0));
+}
