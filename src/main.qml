@@ -11,8 +11,8 @@ ApplicationWindow
     minimumHeight: 250
     color: "#282C34"
 
-    Row {
-        id: row
+    Rectangle {
+        id: rowRect
         height: 50
         anchors.right: parent.right
         anchors.rightMargin: 0
@@ -20,18 +20,23 @@ ApplicationWindow
         anchors.leftMargin: 0
         anchors.top: parent.top
         anchors.topMargin: 0
+        color: "#282C34"
+        z: 2
 
-        Button {
-            id: button
-            text: qsTr("Refresh")
+        Row {
+            id: row
+            anchors.fill: parent
+            Button {
+                id: button
+                text: qsTr("Refresh")
+            }
         }
     }
-
 
     DropArea {
         id: dropArea;
         z: 1
-        anchors.top: row.bottom
+        anchors.top: rowRect.bottom
         anchors.topMargin: 0
         anchors.right: parent.right
         anchors.rightMargin: 0
@@ -62,17 +67,17 @@ ApplicationWindow
     GridView {
         id: gridView
         anchors.right: parent.right
-        anchors.rightMargin: 0
+        anchors.rightMargin: 10
         anchors.left: parent.left
-        anchors.leftMargin: 0
+        anchors.leftMargin: 10
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-        anchors.top: row.bottom
+        anchors.top: rowRect.bottom
         anchors.topMargin: 0
-        cellHeight: 70
+        cellHeight: 90
+        cellWidth: 90
+        z: 1
         delegate: Item {
-            x: 5
-            height: 80
             Column {
                 Image {
                     width: sourceSize.width
@@ -88,7 +93,6 @@ ApplicationWindow
                     }
                 }
                 Text {
-                    x: 5
                     text: name
                     font.bold: true
                     color: "#cccccc"
@@ -98,6 +102,5 @@ ApplicationWindow
             }
         }
         model: repoListModel
-        cellWidth: 70
     }
 }
