@@ -15,12 +15,10 @@ public:
     Repository& operator=(const Repository &other);
 
     QString name() const;
-    QColor statusColor() const;
     QString localPath() const;
     QStringList notifications() const;
 
     void setName(QString name);
-    void setStatusColor(QColor statusColor);
     void setLocalPath(QString localPath);
 
     void addNotification(QString notification);
@@ -29,7 +27,6 @@ public:
 private:
 
     QString m_name;
-    QColor m_statusColor;
     QString m_localPath;
     QStringList m_notifications;
 

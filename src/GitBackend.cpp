@@ -22,8 +22,6 @@ Repository GitBackend::updateRepository(Repository repo) {
     git_repository *repoHandle = nullptr;
     checkError(git_repository_open(&repoHandle, repoPath.c_str()));
 
-    repo.setStatusColor(Qt::transparent);
-
     auto tagsBeforeFetch = getAllTags(repoHandle);
 
     fetchAllRemotes(repoHandle);
@@ -89,7 +87,6 @@ void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tags
   std::set_difference(tagsAfterFetch.begin(), tagsAfterFetch.end(), tagsBeforeFetch.begin(), tagsBeforeFetch.end(),
                       std::back_inserter(newTags));
   if(!newTags.empty()) {
-    repo.setStatusColor(Qt::red);
     QString notification("New tags available: ");
     for(const auto &tag : newTags) {
       notification.append(QString::fromStdString(tag));
@@ -125,7 +122,6 @@ void GitBackend::notifyIfNewBranchCommits(Repository repo, git_repository *repoH
       }
 
       if(commitCount > 0) {
-        repo.setStatusColor(Qt::red);
         repo.addNotification(QString("There are %1 new commits available on the %2 branch.").arg(QString::number(commitCount), branchName));
       }
 

@@ -9,7 +9,7 @@ RepositoryListModel::RepositoryListModel(QObject *parent) :
 QHash<int, QByteArray> RepositoryListModel::roleNames() const {
   QHash<int, QByteArray> roles;
   roles[NameRole] = "name";
-  roles[ColorRole] = "statusColor";
+  roles[NotificationsRole] = "notifications";
   return roles;
 }
 
@@ -31,8 +31,8 @@ QVariant RepositoryListModel::data(const QModelIndex &index, int role) const {
   const Repository &repo = m_repos[index.row()];
   if(role == NameRole)
     return repo.name();
-  else if(role == ColorRole)
-    return repo.statusColor();
+  if(role == NotificationsRole)
+    return repo.notifications();
 
   return QVariant();
 }

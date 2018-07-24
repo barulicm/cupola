@@ -93,7 +93,8 @@ ApplicationWindow
                         width: 20
                         height: 20
                         radius: width*0.5
-                        color: statusColor
+                        visible: notifications.length > 0
+                        color: "red"
                         anchors.right: parent.right
                         anchors.top: parent.top
                     }

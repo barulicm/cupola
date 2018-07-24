@@ -12,7 +12,7 @@ public:
 
     enum RepositoryRoles {
         NameRole = Qt::UserRole +1,
-        ColorRole
+        NotificationsRole
     };
 
     void addRepository(const Repository &repo);
