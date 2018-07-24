@@ -15,6 +15,13 @@ Q_OBJECT
 public:
     explicit GitCredentialsManager(QObject *parent = nullptr);
 
+    int get_ssh_key(git_cred **out, const char *url, const char *username_from_url);
+
+    int get_userpass(git_cred **out, const char *url, const char *username_from_url);
+
+signals:
+    void promptForUserPass();
+
 private:
 
 

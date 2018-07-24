@@ -23,6 +23,7 @@ int main(int argc, char** argv)
   auto rootContext = engine.rootContext();
   rootContext->setContextProperty("repoListModel", &repositoryListModel);
   rootContext->setContextProperty("gitBackend", &gitBackend);
+  rootContext->setContextProperty("gitCredentialsManager", &gitCredentialsManager);
 
   engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 

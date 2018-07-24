@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.4
 
 ApplicationWindow
 {
@@ -10,6 +10,17 @@ ApplicationWindow
     minimumWidth: 350
     minimumHeight: 250
     color: "#282C34"
+
+    function promptForUserPass() {
+        userpassDialog.open()
+    }
+
+    Connections {
+        target: gitCredentialsManager
+        onPromptForUserPass: {
+            return promptForUserPass()
+        }
+    }
 
     Rectangle {
         id: rowRect
@@ -109,5 +120,11 @@ ApplicationWindow
             }
         }
         model: repoListModel
+    }
+
+    Dialog {
+        id: userpassDialog
+        modal: true
+        standardButtons: Dialog.Ok
     }
 }

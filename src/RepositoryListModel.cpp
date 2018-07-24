@@ -48,7 +48,7 @@ void RepositoryListModel::replace(int i, Repository repo) {
 
 void RepositoryListModel::createRepository(QString localPath) {
   auto lastSlashIndex = localPath.lastIndexOf('/');
-  auto name = localPath.mid(lastSlashIndex);
+  auto name = localPath.mid(lastSlashIndex+1);
   if(localPath.midRef(0,7) == "file://") {
     localPath = localPath.mid(7);
   }
