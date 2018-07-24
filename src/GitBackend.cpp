@@ -108,30 +108,32 @@ void GitBackend::notifyIfNewBranchCommits(Repository repo, git_repository *repoH
     checkError(git_branch_name(&branchName, headReference));
 
     git_reference* upstreamReference;
-    checkError(git_branch_upstream(&upstreamReference, headReference));
+    auto upstreamRetVal = git_branch_upstream(&upstreamReference, headReference);
+    if(upstreamRetVal == 0) {
+      auto headName = git_reference_name(headReference);
+      auto upstreamName = git_reference_name(upstreamReference);
 
-    auto headName = git_reference_name(headReference);
-    auto upstreamName = git_reference_name(upstreamReference);
+      git_revwalk* revwalk;
+      git_revwalk_new(&revwalk, repoHandle);
+      git_revwalk_push_ref(revwalk, upstreamName);
+      git_revwalk_hide_ref(revwalk, headName);
 
-    git_revwalk* revwalk;
-    git_revwalk_new(&revwalk, repoHandle);
-    git_revwalk_push_ref(revwalk, upstreamName);
-    git_revwalk_hide_ref(revwalk, headName);
+      git_oid id;
+      int commitCount = 0;
+      while(!git_revwalk_next(&id, revwalk)) {
+        commitCount++;
+      }
 
-    git_oid id;
-    int commitCount = 0;
-    while(!git_revwalk_next(&id, revwalk)) {
-      commitCount++;
+      if(commitCount > 0) {
+        repo.setStatusColor(Qt::red);
+        repo.addNotification(QString("There are %1 new commits available on the %2 branch.").arg(QString::number(commitCount), branchName));
+      }
+
+      git_revwalk_free(revwalk);
+      git_reference_free(upstreamReference);
+    } else if(upstreamRetVal != GIT_ENOTFOUND) {
+      checkError(upstreamRetVal);
     }
-
-    if(commitCount > 0) {
-      repo.setStatusColor(Qt::red);
-      repo.addNotification(QString("There are %1 new commits available on the %2 branch.").arg(QString::number(commitCount), branchName));
-    }
-
-    git_revwalk_free(revwalk);
-
-    git_reference_free(upstreamReference);
   } else if(isBranch != 0) {
     checkError(isBranch);
   }
