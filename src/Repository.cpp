@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Repository.h"
 
 Repository::Repository(QObject *parent)
@@ -56,6 +57,8 @@ QStringList Repository::notifications() const {
 
 void Repository::addNotification(QString notification) {
   m_notifications.append(notification);
+  std::cout << "New notification for " << name().toStdString() << "\n";
+  std::cout << notification.toStdString() << "\n";
 }
 
 void Repository::clearNotification(int notificationIndex) {

@@ -23,8 +23,14 @@ credential_manager_callback(git_cred **cred, const char *url, const char *userna
     std::cout << "network is asking for an SSH key to use\n";
     auto publicKeyPath = QFileDialog::getOpenFileName(nullptr, "Public Key", "~/.ssh").toStdString();
     auto privateKeyPath = QFileDialog::getOpenFileName(nullptr, "Private Key", "~/.ssh").toStdString();
-    std::cout << publicKeyPath << "\t" << privateKeyPath << "\n";
-    git_cred_ssh_key_new(cred, username_from_url, publicKeyPath.c_str(), privateKeyPath.c_str(), "");
+    auto ret = git_cred_ssh_key_new(cred, username_from_url, publicKeyPath.c_str(), privateKeyPath.c_str(), "");
+    if(ret != 0) {
+      const git_error *e = giterr_last();
+      if(e != nullptr) {
+        printf("Error %d/%d: %s\n", ret, e->klass, e->message);
+      }
+      exit(ret);
+    }
     return 0;
   }
   if(allowed_types & GIT_CREDTYPE_SSH_CUSTOM) {

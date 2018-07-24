@@ -13,6 +13,7 @@ GitBackend::GitBackend(GitCredentialsManager *credentialsManager, QObject *paren
   : QObject(parent),
     credentialsManager(credentialsManager)
 {
+  git_libgit2_init();
 }
 
 Repository GitBackend::updateRepository(Repository repo) {
@@ -62,7 +63,8 @@ void GitBackend::fetchAllRemotes(git_repository *repository) {
     auto remoteName = remotes.strings[i];
     git_remote *remote = nullptr;
     checkError(git_remote_lookup(&remote, repository, remoteName));
-    checkError(git_remote_fetch(remote, nullptr, &fetch_opts, nullptr));
+    git_strarray refspecs{nullptr, 0};
+    checkError(git_remote_fetch(remote, &refspecs, &fetch_opts, "fetch"));
     git_remote_free(remote);
   }
 }
@@ -87,7 +89,7 @@ void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tags
   std::set_difference(tagsAfterFetch.begin(), tagsAfterFetch.end(), tagsBeforeFetch.begin(), tagsBeforeFetch.end(),
                       std::back_inserter(newTags));
   if(!newTags.empty()) {
-    repo.setStatusColor("red");
+    repo.setStatusColor(Qt::red);
     QString notification("New tags available: ");
     for(const auto &tag : newTags) {
       notification.append(QString::fromStdString(tag));
@@ -99,14 +101,39 @@ void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tags
 
 void GitBackend::notifyIfNewBranchCommits(Repository repo, git_repository *repoHandle) {
   git_reference *headReference = nullptr;
-  git_repository_head(&headReference, repoHandle);
-  if(git_reference_type(headReference) == GIT_REF_SYMBOLIC) {
-    auto branchName = git_reference_symbolic_target(headReference);
-    std::cout << "Current branch: " << branchName << "\n";
-  } else {
-    auto oid = git_reference_target(headReference);
-    auto oid_str = git_oid_tostr_s(oid);
-    std::cout << "Current commit: " << oid_str << "\n";
+  checkError(git_repository_head(&headReference, repoHandle));
+  auto isBranch = git_reference_is_branch(headReference);
+  if(isBranch == 1) {
+    const char* branchName;
+    checkError(git_branch_name(&branchName, headReference));
+
+    git_reference* upstreamReference;
+    checkError(git_branch_upstream(&upstreamReference, headReference));
+
+    auto headName = git_reference_name(headReference);
+    auto upstreamName = git_reference_name(upstreamReference);
+
+    git_revwalk* revwalk;
+    git_revwalk_new(&revwalk, repoHandle);
+    git_revwalk_push_ref(revwalk, upstreamName);
+    git_revwalk_hide_ref(revwalk, headName);
+
+    git_oid id;
+    int commitCount = 0;
+    while(!git_revwalk_next(&id, revwalk)) {
+      commitCount++;
+    }
+
+    if(commitCount > 0) {
+      repo.setStatusColor(Qt::red);
+      repo.addNotification(QString("There are %1 new commits available on the %2 branch.").arg(QString::number(commitCount), branchName));
+    }
+
+    git_revwalk_free(revwalk);
+
+    git_reference_free(upstreamReference);
+  } else if(isBranch != 0) {
+    checkError(isBranch);
   }
   git_reference_free(headReference);
 }
