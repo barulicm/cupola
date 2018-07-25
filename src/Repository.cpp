@@ -14,13 +14,15 @@ Repository::Repository(const QString &name, const QString &localPath)
 
 Repository::Repository(const Repository &other)
   : m_name(other.m_name),
-    m_localPath(other.m_localPath)
+    m_localPath(other.m_localPath),
+    m_notifications(other.m_notifications)
 {
 }
 
 Repository &Repository::operator=(const Repository &other) {
   m_name = other.m_name;
   m_localPath = other.m_localPath;
+  m_notifications = other.m_notifications;
   return *this;
 }
 
@@ -46,8 +48,6 @@ QStringList Repository::notifications() const {
 
 void Repository::addNotification(QString notification) {
   m_notifications.append(notification);
-  std::cout << "New notification for " << name().toStdString() << "\n";
-  std::cout << notification.toStdString() << "\n";
 }
 
 void Repository::clearNotification(int notificationIndex) {

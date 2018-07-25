@@ -25,10 +25,10 @@ private:
 
     std::vector<std::string> getAllTags(git_repository *repository);
 
-    void notifyIfNewTags(Repository repo, std::vector<std::string> &tagsBeforeFetch,
+    void notifyIfNewTags(Repository &repo, std::vector<std::string> &tagsBeforeFetch,
                          std::vector<std::string> &tagsAfterFetch);
 
-    void notifyIfNewBranchCommits(Repository repo, git_repository *repoHandle);
+    void notifyIfNewBranchCommits(Repository &repo, git_repository *repoHandle);
 };
 
 #endif //CUPOLA_GITBACKEND_H

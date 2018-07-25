@@ -31,10 +31,10 @@ QVariant RepositoryListModel::data(const QModelIndex &index, int role) const {
   const Repository &repo = m_repos[index.row()];
   if(role == NameRole)
     return repo.name();
-  if(role == NotificationsRole)
+  else if(role == NotificationsRole)
     return repo.notifications();
-
-  return QVariant();
+  else
+    return QVariant();
 }
 
 Repository RepositoryListModel::get(int i) {
@@ -42,7 +42,7 @@ Repository RepositoryListModel::get(int i) {
 }
 
 void RepositoryListModel::replace(int i, Repository repo) {
-  m_repos[i] = repo;
+  m_repos.replace(i, repo);
   emit dataChanged(createIndex(i,0), createIndex(i,0));
 }
 

@@ -79,7 +79,7 @@ std::vector<std::string> GitBackend::getAllTags(git_repository *repository) {
   return stdTags;
 }
 
-void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tagsBeforeFetch,
+void GitBackend::notifyIfNewTags(Repository &repo, std::vector<std::string> &tagsBeforeFetch,
                                  std::vector<std::string> &tagsAfterFetch) {
   std::sort(tagsBeforeFetch.begin(), tagsBeforeFetch.end());
   std::sort(tagsAfterFetch.begin(), tagsAfterFetch.end());
@@ -96,7 +96,7 @@ void GitBackend::notifyIfNewTags(Repository repo, std::vector<std::string> &tags
   }
 }
 
-void GitBackend::notifyIfNewBranchCommits(Repository repo, git_repository *repoHandle) {
+void GitBackend::notifyIfNewBranchCommits(Repository &repo, git_repository *repoHandle) {
   git_reference *headReference = nullptr;
   checkError(git_repository_head(&headReference, repoHandle));
   auto isBranch = git_reference_is_branch(headReference);
