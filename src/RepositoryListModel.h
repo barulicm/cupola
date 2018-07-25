@@ -27,6 +27,8 @@ public:
 
     Q_INVOKABLE void createRepository(QString localPath);
 
+    Q_INVOKABLE void clear();
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 
@@ -34,6 +36,5 @@ private:
 
     QList<Repository> m_repos;
 };
-
 
 #endif //CUPOLA_REPOBACKEND_H

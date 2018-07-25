@@ -15,7 +15,7 @@ QHash<int, QByteArray> RepositoryListModel::roleNames() const {
 
 void RepositoryListModel::addRepository(const Repository &repo) {
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-  m_repos << repo;
+  m_repos.append(repo);
   endInsertRows();
 }
 
@@ -53,4 +53,8 @@ void RepositoryListModel::createRepository(QString localPath) {
     localPath = localPath.mid(7);
   }
   addRepository(Repository(name,localPath));
+}
+
+void RepositoryListModel::clear() {
+  m_repos.clear();
 }

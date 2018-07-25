@@ -15,7 +15,7 @@ set(CMAKE_AUTOUIC ON)
 
 qt5_add_resources(QT_RESOURCES src/qml.qrc)
 
-add_executable(Cupola src/main.cpp ${QT_RESOURCES} src/RepositoryListModel.cpp src/Repository.cpp src/GitBackend.cpp src/GitCredentialsManager.cpp)
+add_executable(Cupola src/main.cpp ${QT_RESOURCES} src/RepositoryListModel.cpp src/Repository.cpp src/GitBackend.cpp src/GitCredentialsManager.cpp src/PersistenceManager.cpp)
 target_include_directories(Cupola PRIVATE ${LIBGIT2_INCLUDE_DIR})
 target_link_libraries(Cupola ${LIBGIT2_LIBRARIES})
 qt5_use_modules(Cupola Widgets Quick Core Qml)

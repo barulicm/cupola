@@ -11,6 +11,10 @@ ApplicationWindow
     minimumHeight: 250
     color: "#282C34"
 
+    onClosing: {
+        persistenceManager.saveRepositoryListModel(repoListModel)
+    }
+
     function promptForUserPass() {
         userpassDialog.open()
     }
@@ -67,6 +71,7 @@ ApplicationWindow
         onDropped: {
             if(drop.hasUrls) {
                 repoListModel.createRepository(drop.urls)
+                image.visible = false
             }
         }
     }

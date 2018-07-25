@@ -3,6 +3,7 @@
 #include <QtQml/QtQml>
 #include "RepositoryListModel.h"
 #include "GitBackend.h"
+#include "PersistenceManager.h"
 
 int main(int argc, char** argv)
 {
@@ -10,9 +11,13 @@ int main(int argc, char** argv)
 
   qmlRegisterType<Repository>();
   qRegisterMetaType<Repository>();
+  qmlRegisterType<RepositoryListModel>();
+
+  PersistenceManager persistenceManager;
 
   RepositoryListModel repositoryListModel;
-  repositoryListModel.addRepository(Repository("wheego_selfdrive", "/home/matt/wheego_selfdrive"));
+
+  persistenceManager.loadRepositoryListModel(repositoryListModel);
 
   GitCredentialsManager gitCredentialsManager;
 
@@ -24,6 +29,7 @@ int main(int argc, char** argv)
   rootContext->setContextProperty("repoListModel", &repositoryListModel);
   rootContext->setContextProperty("gitBackend", &gitBackend);
   rootContext->setContextProperty("gitCredentialsManager", &gitCredentialsManager);
+  rootContext->setContextProperty("persistenceManager", &persistenceManager);
 
   engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
