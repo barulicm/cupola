@@ -15,6 +15,17 @@ ApplicationWindow
         persistenceManager.saveRepositoryListModel(repoListModel)
     }
 
+    function refreshAllRepos() {
+        for (var i=0; i < repoListModel.rowCount(); i++) {
+            var newRepo = gitBackend.updateRepository(repoListModel.get(i))
+            repoListModel.replace(i, newRepo)
+        }
+    }
+
+    Component.onCompleted: {
+        refreshAllRepos()
+    }
+
     function promptForUserPass() {
         userpassDialog.open()
     }
@@ -45,10 +56,7 @@ ApplicationWindow
                 id: button
                 text: "Refresh"
                 onClicked: {
-                    for (var i=0; i < repoListModel.rowCount(); i++) {
-                        var newRepo = gitBackend.updateRepository(repoListModel.get(i))
-                        repoListModel.replace(i, newRepo)
-                    }
+                    refreshAllRepos()
                 }
             }
         }
