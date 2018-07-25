@@ -97,7 +97,7 @@ ApplicationWindow
         anchors.top: rowRect.bottom
         anchors.topMargin: 0
         cellHeight: 90
-        cellWidth: 90
+        cellWidth: 180
         z: 1
         delegate: Item {
             Column {
